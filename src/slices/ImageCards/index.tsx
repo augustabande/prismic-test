@@ -57,8 +57,8 @@ const ImageCards = ({ slice }: ImageCardsProps) => {
           </Heading>
         )}
         <ul className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
-          {slice.primary.cards.map((card) => (
-            <ImageCard key={card.image.url} card={card} />
+          {(slice.primary.cards || []).map((card, index) => (
+            <ImageCard key={card.image?.url || index} card={card} />
           ))}
         </ul>
       </div>

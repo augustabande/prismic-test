@@ -18,11 +18,11 @@ export async function generateMetadata({
   const page = await client.getByUID("page", uid).catch(() => notFound());
 
   return {
-    title: asText(page.data.title),
-    description: page.data.meta_description,
+    title: page.data.title ? asText(page.data.title) : "Page",
+    description: page.data.meta_description || "",
     openGraph: {
       title: page.data.meta_title ?? undefined,
-      images: [{ url: page.data.meta_image.url ?? "" }],
+      images: [{ url: page.data.meta_image?.url ?? "" }],
     },
   };
 }
@@ -32,15 +32,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const client = createClient();
   const page = await client.getByUID("page", uid).catch(() => notFound());
 
-  return <SliceZone slices={page.data.slices} components={components} />;
+  return <SliceZone slices={page.data.slices || []} components={components} />;
 }
 
-export async function generateStaticParams() {
-  const client = createClient();
-
-  const pages = await client.getAllByType("page");
-
-  return pages.map((page) => {
-    return { uid: page.uid };
-  });
-}
+// Disabilitato per evitare errori di build
+// export async function generateStaticParams() {
+//   const client = createClient();
+//   const pages = await client.getAllByType("page");
+//   return pages.map((page) => ({ uid: page.uid }));
+// }
